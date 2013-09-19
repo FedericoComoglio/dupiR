@@ -8,6 +8,7 @@ This package implements a Bayesian approach to infer population sizes from count
 dupiR has been developed by Federico Comoglio (ETH Zurich) and Maurizio Rinaldi (University of Piemonte Orientale). This GitHub repository contains a first release of the package and will accommodate subsequent updates. We welcome external contributions.
 
 Feel free to contact us at:
+
 <federico.comoglio@bsse.ethz.ch>
 
 <maurizio.rinaldi@pharm.unipmn.it>
