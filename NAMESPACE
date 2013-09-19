@@ -1,0 +1,18 @@
+#exportPattern("^[[:alpha:]]+")
+importFrom(graphics, plot)
+
+exportClasses( "Counts" )
+
+exportMethods(
+   	getCounts,
+   	getFractions,
+	plot,
+	summary
+)
+
+export(
+	computePosterior,
+	plotPosterior,
+	newCounts,
+	getPosteriorParam
+)
