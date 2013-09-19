@@ -9,4 +9,5 @@ dupiR has been developed by Federico Comoglio (ETH Zurich) and Maurizio Rinaldi 
 
 Feel free to contact us at:
 <federico.comoglio@bsse.ethz.ch>
+
 <maurizio.rinaldi@pharm.unipmn.it>
