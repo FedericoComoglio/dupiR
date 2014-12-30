@@ -80,10 +80,10 @@ setReplaceMethod(f = 'setFractions',
 		}
 )
 
-setGeneric( name = 'computePosterior', def = function(object, n1, n2, replacement = FALSE, alg = 'DUP') standardGeneric ('computePosterior') )
+setGeneric( name = 'computePosterior', def = function(object, n1, n2, replacement = FALSE, b = 1e-10, alg = 'DUP') standardGeneric ('computePosterior') )
 setMethod(f = 'computePosterior',
 		signature = 'Counts',
-		definition = function(object, n1, n2, replacement = FALSE, alg = 'DUP') {
+		definition = function(object, n1, n2, replacement = FALSE, b, alg = 'DUP') {
 			stopifnot( is(object, 'Counts') )	
 			#init vars
 			k.vec <- object@counts
@@ -101,7 +101,7 @@ setMethod(f = 'computePosterior',
 			switch(alg, 'DUP' = {
 				if(R < 1/32) {	#compute with replacement, use Clough
 					message("Notice: Effect of replacement negligible, used faster algorithm (Gamma approximation).")
-					posterior <- Clough(object, n1, n2, b = 1e-6)
+					posterior <- Clough(object, n1, n2, b = b)
 					object@posterior <- posterior
 					object@gamma <- TRUE
 					return(object)
@@ -121,7 +121,7 @@ setMethod(f = 'computePosterior',
 					
 				}},
 				'GP' = {
-					posterior <- Clough(object, n1, n2, b = 1e-6)
+					posterior <- Clough(object, n1, n2, b = b)
 					object@posterior <- posterior
 					object@gamma <- TRUE
 					return(object)
@@ -166,7 +166,7 @@ setMethod(f = 'getPosteriorParam',
 			}
 			else {	#computed with a Gamma
 				a <- 1
-				b <- 1e-6
+				b <- 1e-10
 				object@gamma <- TRUE
 				#quantiles
 				qlow <- round(qgamma(low,  a + K, b + R))
@@ -174,15 +174,12 @@ setMethod(f = 'getPosteriorParam',
 				#update n1,n2
 				n1 <- round(0.9 * qlow)
 				n2 <- round(1.1 * qup)
-			#	s <- n1 : n2
 				map <- round(K / (R + b))
-			#	map.idx <- which(s == map)
 				map.idx <- ifelse(n1 == 0, map, map - n1 + 1)
 				map.p <- dgamma(map, a + K, b + R)
 				qlow.idx <- as.integer(ifelse(n1 == 0, qlow, qlow - n1 + 1))
 				qlow.p <- dgamma(qlow,  a + K, b + R)	#
 				qlow.cum <- pgamma(qlow,  a + K, b + R)
-			#	qup.idx <- which(s == qup)
 				qup.idx <- as.integer(ifelse(n1 == 0, qup, qup - n1 + 1))
 				qup.p <- dgamma(qup,  a + K, b + R)
 				qup.cum <- pgamma(qup,  a + K, b + R)		
@@ -208,7 +205,7 @@ setGeneric( name = 'plotPosterior', def = function(object, low = 0.025, up = 0.9
 setMethod(f = 'plotPosterior',
 		signature = 'Counts',
 		definition = function(object, low = 0.025, up = 0.975, xlab, step, ...) {
-			require(plotrix)	#dependency
+			
 			stopifnot( is(object, 'Counts') )
 			k.vec <- object@counts
 			r.vec <- object@fractions
@@ -219,7 +216,7 @@ setMethod(f = 'plotPosterior',
 			n2 <- tmp@n2
 			s <- n1 : n2
 			a <- 1
-			b <- 1e-6
+			b <- 1e-10
 			main.text <- paste('Posterior probability distribution \n ', 'K=', sum(k.vec), '; ', 'R=', sum(r.vec), sep = '')
 			if(!is.null(posterior)) {
 				l <- length(s)

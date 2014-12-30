@@ -5,7 +5,7 @@ README
 
 This package implements a Bayesian approach to infer population sizes from count data. The package takes a set of sample counts obtained by sampling fractions of a finite volume containing an homogeneously dispersed population of identical objects and returns the posterior probability distribution of the population size. The algorithm makes use of a binomial likelihood and non-conjugate, discrete uniform priors. dupiR can be applied to both sampling with or without replacement.
 
-I developed dupiR in collaboration with Maurizio Rinaldi (University of Piemonte Orientale). This GitHub repository contains a first release of the package and will accommodate subsequent updates. We welcome external contributions.
+I developed dupiR in collaboration with Maurizio Rinaldi (University of Piemonte Orientale). This GitHub repository contains stable and devel versions of the package (current version is 1.2). We welcome external contributions.
 
 Feel free to contact us at:
 

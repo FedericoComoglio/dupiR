@@ -1,7 +1,10 @@
 #exportPattern("^[[:alpha:]]+")
 importFrom(graphics, plot)
+import(methods)
+import(plotrix)
 
-exportClasses( "Counts" )
+
+exportClass( "Counts" )
 
 exportMethods(
    	getCounts,

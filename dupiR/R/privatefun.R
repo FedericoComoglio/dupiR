@@ -38,7 +38,7 @@ getPwithR <- function(n, k.vec, X, denominator) {
 getECDF <- function(posterior)
 	return(cumsum(posterior))
 
-Clough <- function(object, n1, n2, b = 1e-6) {
+Clough <- function(object, n1, n2, b = 1e-10) {
 	a <- 1
 	k.vec <- object@counts
 	r.vec <- object@fractions
