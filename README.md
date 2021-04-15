@@ -1,5 +1,4 @@
 ## dupiR: an R package for Bayesian inference using discrete uniform priors 
-======
 
 This R package implements a Bayesian approach to infer population sizes from count data. The package takes a set of sample counts obtained by sampling fractions of a finite volume containing an homogeneously dispersed population of identical objects and returns the posterior probability distribution of the population size. The algorithm makes use of a binomial likelihood and non-conjugate, discrete uniform priors. `dupiR` can be applied to both sampling with or without replacement.
 
