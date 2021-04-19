@@ -1,4 +1,3 @@
-#exportPattern("^[[:alpha:]]+")
 importFrom(graphics, plot)
 import(methods)
 import(plotrix)
