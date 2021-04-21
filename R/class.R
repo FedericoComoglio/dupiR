@@ -120,38 +120,32 @@ setMethod(
   f = "initialize",
   signature = "Counts",
   definition = function(.Object, counts, fractions) {
+      
+    # set counts
+    .Object@counts <- counts
+    # set fractions
+    .Object@fractions <- fractions
     
-    # require counts and fractions
- #   if (not(missing(counts)) & not(missing(fractions))) {
-      
-      # set counts
-      .Object@counts <- counts
-
-      # set fractions
-      .Object@fractions <- fractions
-      
-      # compute product of fractions
-      .Object@f_product <- prod(1 - fractions)
-      
-      # compute mle
-      mle <- round(sum(counts) / sum(fractions))
-      
-      # compute prior support
-      n_start <- round(0.5 * mle)
-      n_end <- ifelse(2 * mle == 0, round(1 / min(fractions)), 2 * mle)
-      
-      # set prior support
-      .Object@n_start <- n_start
-      .Object@n_end <- n_end
-      .Object@mle <- mle
-      .Object@gamma <- FALSE
-
-      # validate
-      validObject(.object)
-      
- #   }
+    # compute product of fractions
+    .Object@f_product <- prod(1 - fractions)
     
-    return(.object)
+    # compute mle
+    mle <- round(sum(counts) / sum(fractions))
+    
+    # compute prior support
+    n_start <- round(0.5 * mle)
+    n_end <- ifelse(2 * mle == 0, round(1 / min(fractions)), 2 * mle)
+    
+    # set prior support
+    .Object@n_start <- n_start
+    .Object@n_end <- n_end
+    .Object@mle <- mle
+    .Object@gamma <- FALSE
+    
+    # validate
+    validObject(.Object)
+    
+    return(.Object)
     
   }
 )
@@ -163,10 +157,6 @@ setMethod(
 #' 
 new_counts <- function(counts, fractions) {
 
-  if (not(missing(counts)) & not(missing(fractions))) {
-
     new(Class = "Counts", counts = counts, fractions = fractions)
-
-  }
 
 }
