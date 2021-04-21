@@ -80,21 +80,21 @@ setClass(
   validity = function(object) {
 
     # number of counts must be same as number of fractions
-    if (not(length(object@counts) == length(object@fractions))) {
+    if (!(length(object@counts) == length(object@fractions))) {
 
       stop("The number of measurements does not match the number of fractions")
 
     }
 
     # fractions must be strictly positive and <= 1
-    if (not(all(object@fractions <= 1 & object@fractions > 0))) {
+    if (!(all(object@fractions <= 1 & object@fractions > 0))) {
 
       stop("At least one fraction not in (0,1]")
 
     }
 
     # counts must be integer
-    if (not(is.integer(object@counts))) {
+    if (!(is.integer(object@counts))) {
       
       stop("Counts are not integer")
       
