@@ -120,26 +120,38 @@ setMethod(
   f = "initialize",
   signature = "Counts",
   definition = function(.Object, counts, fractions) {
+    
+    # if counts not provided, create dummy
+    if(missing(counts)) {
       
+      counts <- integer()
+      
+    }
+    
     # set counts
     .Object@counts <- counts
+    
+    # if fractions not provided, create dummy
+    if(missing(fractions)) {
+      
+      fractions <- numeric()
+      
+    }
+    
     # set fractions
     .Object@fractions <- fractions
     
-    # compute product of fractions
+    # compute and set product of fractions
     .Object@f_product <- prod(1 - fractions)
     
-    # compute mle
-    mle <- round(sum(counts) / sum(fractions))
+    # compute and set mle
+    .Object@mle <- round(sum(counts) / sum(fractions))
     
-    # compute prior support
-    n_start <- round(0.5 * mle)
-    n_end <- ifelse(2 * mle == 0, round(1 / min(fractions)), 2 * mle)
+    # compute and set prior support
+    .Object@n_start <- round(0.5 * .Object@mle)
+    .Object@n_end <- ifelse(2 * .Object@mle == 0, round(1 / min(fractions)), 2 * .Object@mle)
     
-    # set prior support
-    .Object@n_start <- n_start
-    .Object@n_end <- n_end
-    .Object@mle <- mle
+    # set gamma to default
     .Object@gamma <- FALSE
     
     # validate
