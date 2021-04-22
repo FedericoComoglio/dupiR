@@ -25,7 +25,7 @@ setMethod(
     
     if (length(object@map_p) > 0) {
       
-      cat("| maximum posterior probability: ", object@map.p, "\n")
+      cat("| maximum posterior probability: ", object@map_p, "\n")
     
     }
     
@@ -45,12 +45,16 @@ setMethod(
   f = "summary",
   signature = "Counts",
   definition = function(object, ...) {
-    cat("An object of class 'Counts'", "\n")
-    cat("Counts: ", object@counts, "\n")
-    cat("from Fractions: ", object@fractions, "\n")
-    cat("Prior support: ", paste("[", object@n1, ",", object@n2, "]", sep = ""), "\n")
-    tmp <- ifelse(!identical(object@posterior, numeric(0)), TRUE, FALSE)
-    cat("Computed posterior probability distribution: ", tmp, "\n")
+    
+    cat("# A 'Counts' object", "\n")
+    cat("| counts: ", object@counts, "\n")
+    cat("| fractions: ", object@fractions, "\n")
+    cat("| prior support: ", paste0("[", object@n_start, ":", object@n_end, "]"), "\n")
+    
+    has_posterior <- ifelse(!identical(object@posterior, numeric(0)), TRUE, FALSE)
+    
+    cat("| posterior computed: ", has_posterior, "\n")
+  
   }
 )
 
