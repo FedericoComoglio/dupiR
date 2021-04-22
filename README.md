@@ -1,7 +1,7 @@
 ## dupiR: an R package for Bayesian inference using discrete uniform priors 
 
 [![](https://www.r-pkg.org/badges/version/dupiR?color=orange)](https://cran.r-project.org/package=dupiR)
-[![](https://img.shields.io/badge/devel%20version-1.2-blue.svg)](https://github.com/FedericoComoglio/dupiR)
+[![](https://img.shields.io/badge/devel%20version-1.2.1-blue.svg)](https://github.com/FedericoComoglio/dupiR)
 [![](https://img.shields.io/badge/lifecycle-stable-blue.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![](https://codecov.io/gh/FedericoComoglio/dupiR/branch/devel/graph/badge.svg)](https://codecov.io/gh/FedericoComoglio/dupiR)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/dupiR?color=blue)](https://cran.r-project.org/package=dupiR)
