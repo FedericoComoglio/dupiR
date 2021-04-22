@@ -125,7 +125,7 @@ setMethod(
     if(!is.integer(counts) && is.numeric(counts)) {
       
       counts <- as.integer(counts)
-      message("Counts converted to integer.")
+      message("Counts converted to integer")
       
     }
     
