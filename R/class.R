@@ -92,13 +92,6 @@ setClass(
       stop("At least one fraction not in (0,1]")
 
     }
-
-    # counts must be integer
-    if (!(is.integer(object@counts))) {
-      
-      stop("Counts are not integer")
-      
-    }
     
     # counts must be positive
     if (any(object@counts < 0)) {
@@ -125,6 +118,14 @@ setMethod(
     if(missing(counts)) {
       
       counts <- integer()
+      
+    }
+    
+    # if counts are numeric but not integer, cast to integer
+    if(!is.integer(counts) && is.numeric(counts)) {
+      
+      counts <- as.integer(counts)
+      message("Counts converted to integer.")
       
     }
     
