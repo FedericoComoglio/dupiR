@@ -1,5 +1,5 @@
-#' An S4 class to represent measurements (count data, sampling fractions)
-#' and inferred population sizes
+#' An S4 class to represent measurements (count data, sampling fractions),
+#' prior support and posterior parameters
 #'
 #' @slot counts integer vector of counts (required)
 #' @slot fractions numeric vector of sampling fractions (required)
@@ -166,6 +166,8 @@ setMethod(
 #' 
 #' @param counts integer vector of counts
 #' @param fractions numeric vector of sampling fractions
+#' 
+#' @return An object of the \code{Counts} class
 #' 
 #' @export
 #' 

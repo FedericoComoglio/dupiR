@@ -1,4 +1,117 @@
-#' Print method for `Counts` class
+# getters ------------------------------------------------------------
+
+#' Get \code{counts} slot for an object of class \code{Counts}
+#' 
+#' @inheritParams 
+#' 
+setGeneric(name = "get_counts", def = function(object) standardGeneric("get_counts"))
+
+
+#' @describeIn Counts Returns counts from a \code{Counts} object
+#' 
+#' @export
+#' 
+setMethod(
+  f = "get_counts",
+  signature = "Counts",
+  definition = function(object) {
+    
+    return(object@counts)
+    
+  }
+)
+
+
+#' Get \code{fractions} slot for an object of class \code{Counts}
+#' 
+#' @inheritParams 
+#' 
+setGeneric(name = "get_fractions", def = function(object) standardGeneric("get_fractions"))
+
+
+#' @describeIn Counts Returns fractions from a \code{Counts} object
+#' 
+#' @export
+#' 
+setMethod(
+  f = "get_fractions",
+  signature = "Counts",
+  definition = function(object) {
+    
+    return(object@fractions)
+    
+  }
+)
+
+
+# setters ------------------------------------------------------------
+
+#' Set \code{counts} slot for an object of class \code{Counts}
+#' 
+#' @param object object of class \code{Counts}
+#' @param value numeric vector of counts
+#' 
+setGeneric(name = "set_counts<-", def = function(object, value) standardGeneric("set_counts<-"))
+
+
+#' @describeIn Counts Replaces counts of a \code{Counts} object with the provided values
+#' 
+#' @export
+#' 
+setReplaceMethod(
+  f = "set_counts",
+  signature = "Counts",
+  definition = function(object, value) {
+    
+    # set counts
+    object@counts <- as.integer(value)
+    
+    # validate
+    validObject(object)
+    
+    return(object)
+    
+  }
+)
+
+
+#' Set \code{fractions} slot for an object of class \code{Counts}
+#' 
+#' @param object object of class \code{Counts}
+#' @param value numeric vector of sampling fractions
+#'
+setGeneric(name = "set_fractions<-", def = function(object, value) standardGeneric("set_fractions<-"))
+
+
+#' 
+#' @describeIn Counts Replaces fractions of a \code{Counts} object with the provided values
+#' 
+#' @export
+#' 
+setReplaceMethod(
+  f = "set_fractions",
+  signature = "Counts",
+  definition = function(object, value) {
+    
+    # set fractions
+    object@fractions <- value
+    
+    # validate
+    validObject(object)
+    
+    return(object)
+    
+  }
+)
+
+
+# print and summary ------------------------------------------------------------
+
+#' Print method for \code{Counts} class
+#' 
+#' @param object object of class \code{Counts}
+#' 
+#' @export
 #' 
 setMethod(
   f = "show",
@@ -39,7 +152,12 @@ setMethod(
   }
 )
 
-#' Summary method for `Counts` class
+
+#' Summary method for \code{Counts} class
+#' 
+#' @param object object of class \code{Counts}
+#' 
+#' @export
 #' 
 setMethod(
   f = "summary",
@@ -53,65 +171,51 @@ setMethod(
     
     has_posterior <- ifelse(!identical(object@posterior, numeric(0)), TRUE, FALSE)
     
-    cat("| posterior computed: ", has_posterior, "\n")
+    cat("| posterior available: ", has_posterior, "\n")
   
   }
 )
 
+
+# plot ------------------------------------------------------------
+
+#' Plot method for \code{Counts} class
+#' 
+#' @param x object of class \code{Counts}
+#' @param ... additional parameters to be passed to \link{dupiR::plot_posterior}`
+#' 
+#' @export
+#' 
 setMethod(
   f = "plot",
   signature = "Counts",
   definition = function(x, ...) {
-    if (length(x@posterior) > 0 || x@gamma == TRUE) { # it has been computed
-      plotPosterior(x, ...)
+    
+    # if posterior computed
+    if (length(x@posterior) > 0 || x@gamma == TRUE) {
+    
+      # plot posterior density  
+      plot_posterior(x, ...)
+    
     }
     else {
-      stop("Slot posterior empty, need to compute posterior density first (see computePosterior).")
+      
+      stop("No posterior available. Please use `compute_posterior` to compute it")
+    
     }
+    
   }
 )
 
-# Getters
-setGeneric(name = "getCounts", def = function(object) standardGeneric("getCounts"))
-setMethod(
-  f = "getCounts",
-  signature = "Counts",
-  definition = function(object) {
-    return(object@counts)
-  }
-)
 
-setGeneric(name = "getFractions", def = function(object) standardGeneric("getFractions"))
-setMethod(
-  f = "getFractions",
-  signature = "Counts",
-  definition = function(object) {
-    return(object@fractions)
-  }
-)
 
-# Setters
-setGeneric(name = "setCounts<-", def = function(object, value) standardGeneric("setCounts<-"))
-setReplaceMethod(
-  f = "setCounts",
-  signature = "Counts",
-  definition = function(object, value) {
-    object@counts <- as.integer(value)
-    validObject(object)
-    return(object)
-  }
-)
 
-setGeneric(name = "setFractions<-", def = function(object, value) standardGeneric("setFractions<-"))
-setReplaceMethod(
-  f = "setFractions",
-  signature = "Counts",
-  definition = function(object, value) {
-    object@fractions <- value
-    validObject(object)
-    return(object)
-  }
-)
+
+
+
+
+
+
 
 setGeneric(name = "computePosterior", def = function(object, n1, n2, replacement = FALSE, b = 1e-10, alg = "DUP") standardGeneric("computePosterior"))
 setMethod(
