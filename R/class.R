@@ -41,7 +41,7 @@
 #' # create an object of class 'Counts'
 #' new_counts(counts = c(30, 35), fractions = c(0.075, 0.1))
 #'
-#' # same, using `new`
+#' # same, using new
 #' new("Counts", counts = c(30, 35), fractions = c(0.075, 0.1))
 #'
 #' @keywords class
@@ -105,7 +105,7 @@ setClass(
 )
 
 
-#' Initialize `Counts` class
+#' Initialize \code{Counts} class
 #'
 setMethod(
   f = "initialize",
@@ -162,7 +162,10 @@ setMethod(
 )
 
 
-#' Constructor for `Counts` class
+#' Constructor for \code{Counts} class
+#' 
+#' @param counts integer vector of counts
+#' @param fractions numeric vector of sampling fractions
 #' 
 #' @export
 #' 
