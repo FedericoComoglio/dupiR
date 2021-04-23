@@ -2,3 +2,10 @@
 
 export(new_counts)
 exportClasses(Counts)
+exportMethods("set_counts<-")
+exportMethods("set_fractions<-")
+exportMethods(get_counts)
+exportMethods(get_fractions)
+exportMethods(plot)
+exportMethods(show)
+exportMethods(summary)

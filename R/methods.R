@@ -2,7 +2,7 @@
 
 #' Get \code{counts} slot for an object of class \code{Counts}
 #' 
-#' @inheritParams 
+#' @param object object of class \code{Counts}
 #' 
 setGeneric(name = "get_counts", def = function(object) standardGeneric("get_counts"))
 
@@ -24,7 +24,7 @@ setMethod(
 
 #' Get \code{fractions} slot for an object of class \code{Counts}
 #' 
-#' @inheritParams 
+#' @inheritParams get_counts
 #' 
 setGeneric(name = "get_fractions", def = function(object) standardGeneric("get_fractions"))
 
@@ -109,7 +109,7 @@ setReplaceMethod(
 
 #' Print method for \code{Counts} class
 #' 
-#' @param object object of class \code{Counts}
+#' @inheritParams get_counts
 #' 
 #' @export
 #' 
@@ -155,7 +155,8 @@ setMethod(
 
 #' Summary method for \code{Counts} class
 #' 
-#' @param object object of class \code{Counts}
+#' @inheritParams get_counts
+#' @param ... additional parameters affecting the summary produced
 #' 
 #' @export
 #' 
@@ -182,7 +183,7 @@ setMethod(
 #' Plot method for \code{Counts} class
 #' 
 #' @param x object of class \code{Counts}
-#' @param ... additional parameters to be passed to \link{dupiR::plot_posterior}`
+#' @param ... additional parameters to be passed to \link{plot_posterior}
 #' 
 #' @export
 #' 
