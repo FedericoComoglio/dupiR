@@ -209,66 +209,182 @@ setMethod(
 )
 
 
+# posterior ------------------------------------------------------------
 
 
+#' Compute the posterior probability distribution of the population size 
+#' for an object of class \code{Counts}
+#' 
+#' @description Compute the posterior probability distribution of the population size 
+#' using a discrete uniform prior and a binomial likelihood ("dup" algorithm, Comoglio et al.). 
+#' An approximation using a Gamma prior and a Poisson likelihood is used when 
+#' applicable ("gamma" algorithm) method (see Clough et al. for details)
+#' 
+#' @inheritParams get_counts
+#' @param n_start start of prior support range
+#' @param n_end end of prior support range
+#' @param value numeric vector of counts
+#' @param replacement was sampling performed with replacement? Default to FALSE
+#' @param b prior rate parameter of the gamma distribution used to compute the posterior with Clough. Default to 1e-10
+#' @param alg algorithm to be used to compute posterior. One of ... . Default to "dup" () 
+#' 
+#' @return an object of class \code{Counts}
+#' 
+#' @references Comoglio F, Fracchia L and Rinaldi M (2013) 
+#' Bayesian inference from count data using discrete uniform priors. 
+#' \href{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0074388}{PLoS ONE 8(10): e74388}
+#' 
+#' @references Clough HE et al. (2005) 
+#' Quantifying Uncertainty Associated with Microbial Count Data: A Bayesian Approach. 
+#' \href{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1541-0420.2005.030903.x}{Biometrics 61: 610-616}
+#' 
+#' @author Federico Comoglio
+#'
+#' @examples 
+#' counts <- new_counts(counts = c(20,30), fractions = c(0.075, 0.10))
+#' 
+#' # default parameters ("dup" algorithm, sampling without replacement, default prior support)
+#' posterior <- compute_posterior(counts)
+#' 
+#' # custom prior support ("dup" algorithm)
+#' posterior <- compute_posterior(counts, n_start = 0, n_end = 1e3)
+#' 
+#' # gamma prior ("gamma" algorithm)
+#' posterior <- compute_posterior(counts, alg = "gamma")
+#' 
+#' # sampling with replacement
+#' posterior <- compute_posterior(counts, replacement = TRUE)
+#' 
+setGeneric(name = "compute_posterior", 
+           def = function(object, n_start, n_end, replacement = FALSE, b = 1e-10, alg = "dup") {
+             
+             standardGeneric("compute_posterior")
+             
+           })
+          
 
-
-
-
-
-
-
-setGeneric(name = "computePosterior", def = function(object, n1, n2, replacement = FALSE, b = 1e-10, alg = "DUP") standardGeneric("computePosterior"))
+#' 
+#' @describeIn Counts Compute the posterior probability distribution of the population size
+#' 
+#' @export
+#' 
 setMethod(
-  f = "computePosterior",
+  f = "compute_posterior",
   signature = "Counts",
-  definition = function(object, n1, n2, replacement = FALSE, b, alg = "DUP") {
-    stopifnot(is(object, "Counts"))
-    # init vars
-    k.vec <- object@counts
-    r.vec <- object@fractions
-    X <- object@X
-    K <- sum(k.vec) # total counts
-    R <- sum(r.vec) # total sampling fractions
-    # choose support
-    if (missing(n1) & missing(n2)) {
-      n1 <- object@n1
-      n2 <- object@n2
+  definition = function(object, n_start, n_end, replacement = FALSE, b, alg = "dup") {
+    
+    # validate input data type
+    if(!is(object, "Counts")) {
+      
+      stop("Input object not of class `Counts`")
+      
     }
-    object@n1 <- n1
-    object@n2 <- n2
+    
+    # validate algorithm key
+    valid_alg <- c("dup", "gamma")
+    
+    if(!alg %in% valid_alg) {
+      
+      stop("Invalid algorithm name. Please provide one of `dup` or `gamma` to argument `alg`")
+      
+    }
+    
+    # unpack
+    k_vec <- object@counts
+    r_vec <- object@fractions
+    X <- object@f_product
+    
+    # compute total counts and sum of sampling fractions
+    K <- sum(k_vec)
+    R <- sum(r_vec)
+    
+    # if range start not provided
+    if (missing(n_start)) {
+      
+      # get it from object
+      n_start <- object@n_start
+      
+    } else {
+      
+      # set range start
+      object@n_start <- n_start
+      
+    }
+    
+    # if range end not provided
+    if (missing(n_end)) {
+      
+      # get it from object
+      n_end <- object@n_end
+      
+    } else {
+      
+      # set range end
+      object@n_end <- n_end
+      
+    }
+    
+    # compute posterior
     switch(alg,
-      "DUP" = {
-        if (R < 1 / 32) { # compute with replacement, use Clough
-          message("Notice: Effect of replacement negligible, used faster algorithm (Gamma approximation).")
-          posterior <- Clough(object, n1, n2, b = b)
+      "dup" = {
+        
+        # with replacement, using Clough et al.
+        if (R < 1 / 32) { 
+          
+          message("Effect of replacement negligible, used Gamma approximation")
+          posterior <- gamma_poisson_clough(object, n_start, n_end, b = b)
           object@posterior <- posterior
           object@gamma <- TRUE
+          
           return(object)
+          
         }
-        s <- n1:n2
-        if (replacement) { # with replacement
-          denominator <- normalizeConstant(X, k.vec, n1, n2)
-          posterior <- sapply(s, getPwithR, k.vec, X, denominator)
+        
+        s <- n_start : n_end
+        
+        # with replacement
+        if (replacement) { 
+          
+          denominator <- get_normalization_constant(X, k_vec, n_start, n_end)
+          posterior <- sapply(s, getPwithR, k_vec, X, denominator)
           object@nconst <- denominator
           object@posterior <- posterior
+          
           return(object)
+          
         }
-        else { # without replacement
+        
+        # without replacement
+        else {
+          
           posterior <- dnbinom(s - K, K + 1, R)
           object@posterior <- posterior
+          
           return(object)
         }
       },
-      "GP" = {
-        posterior <- Clough(object, n1, n2, b = b)
+      
+      # with gamma-poisson, using Clough et al.
+      "gamma" = {
+        posterior <- gamma_poisson_clough(object, n_start, n_end, b = b)
         object@posterior <- posterior
         object@gamma <- TRUE
+        
         return(object)
       }
     )
   }
 )
+
+
+
+
+
+
+
+
+
+
 
 setGeneric(name = "getPosteriorParam", def = function(object, low = 0.025, up = 0.975, ...) standardGeneric("getPosteriorParam"))
 setMethod(
