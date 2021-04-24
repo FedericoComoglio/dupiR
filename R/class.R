@@ -1,4 +1,4 @@
-#' An S4 class to represent measurements (count data, sampling fractions),
+#' An S4 class to store measurements (count data, sampling fractions),
 #' prior support and posterior parameters
 #'
 #' @slot counts integer vector of counts (required)
@@ -35,6 +35,8 @@
 #' \href{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0074388}{PLoS ONE 8(10): e74388}
 #'
 #' @author Federico Comoglio
+#' 
+#' @seealso \link{compute_posterior}
 #'
 #' @examples 
 #' # constructor:
