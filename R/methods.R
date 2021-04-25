@@ -377,88 +377,170 @@ setMethod(
 )
 
 
+#' Compute posterior probability distribution parameters (e.g. credible intervals)
+#' for an object of class \code{Counts}
+#' 
+#' @description This function computes posterior parameters and credible intervals 
+#' at the given confidence level (default to 95\%).
+#' 
+#' @inheritParams get_counts
+#' @param up left tail posterior probability
+#' @param low 1 - right tail posterior probability
+#' @param ... additional parameters to be passed to \link{plot_posterior}
+#' 
+#' @return an object of class \code{Counts}
+#' 
+#' @references Comoglio F, Fracchia L and Rinaldi M (2013) 
+#' Bayesian inference from count data using discrete uniform priors. 
+#' \href{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0074388}{PLoS ONE 8(10): e74388}
+#' 
+#' @references Clough HE et al. (2005) 
+#' Quantifying Uncertainty Associated with Microbial Count Data: A Bayesian Approach. 
+#' \href{https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1541-0420.2005.030903.x}{Biometrics 61: 610-616}
+#' 
+#' @author Federico Comoglio
+#'
+#' @examples 
+#' counts <- new_counts(counts = c(20,30), fractions = c(0.075, 0.10))
+#' 
+#' # default parameters ("dup" algorithm, sampling without replacement, default prior support)
+#' posterior <- compute_posterior(counts)
+#' 
+#' get_posterior_param(posterior)
+#' 
+setGeneric(name = "get_posterior_param", 
+           def = function(object, low = 0.025, up = 0.975, ...) {
+             
+             standardGeneric("get_posterior_param")
+          
+           })
 
 
-
-
-
-
-
-
-
-setGeneric(name = "getPosteriorParam", def = function(object, low = 0.025, up = 0.975, ...) standardGeneric("getPosteriorParam"))
+#' 
+#' @describeIn Counts Extract statistical parameters (e.g. credible intervals) 
+#' from a posterior probability distribution
+#' 
+#' @export
+#' 
 setMethod(
-  f = "getPosteriorParam",
+  f = "get_posterior_param",
   signature = "Counts",
   definition = function(object, low = 0.025, up = 0.975, ...) {
-    k.vec <- object@counts
-    r.vec <- object@fractions
-    K <- sum(k.vec)
-    R <- sum(r.vec)
+    
+    # unpack
     posterior <- object@posterior
-    if (!is.null(posterior)) { # not computed with a Gamma
-      n1 <- object@n1
-      n2 <- object@n2
-      s <- n1:n2
-      map.idx <- which.max(posterior)
-      map.p <- posterior[map.idx]
-      map <- s[map.idx]
-      ecdf <- getECDF(posterior)
-      tmp <- which((ecdf <= low) == TRUE)
-      if (length(tmp) == 0) {
-        qlow.idx <- as.integer(1)
-        qlow.p <- posterior[qlow.idx]
-        qlow.cum <- 0
-        qlow <- 0
+    
+    # if posterior computed with dup
+    if (!is.null(posterior)) {
+      
+      # unpack 
+      n_start <- object@n_start
+      n_end   <- object@n_end
+      s       <- n_start : n_end
+      
+      # compute posterior params
+      map_index <- which.max(posterior)
+      map_p     <- posterior[map_index]
+      map       <- s[map_index]
+      
+      # compute cumulative
+      ecdf <- compute_ecdf(posterior)
+    
+      # compute lower bound of credible interval
+      if (all(ecdf > low)) {
+        
+        q_low_index <- 1L
+        q_low_p     <- posterior[q_low_index]
+        q_low_cum   <- 0
+        q_low       <- 0
+
       }
       else {
-        qlow.idx <- tmp[length(tmp)]
-        qlow.p <- posterior[qlow.idx]
-        qlow.cum <- ecdf[qlow.idx]
-        qlow <- s[qlow.idx]
+      
+        lower_index <- which((ecdf <= low) == TRUE)
+        q_low_index <- lower_index[length(lower_index)]
+        q_low_p     <- posterior[q_low_index]
+        q_low_cum   <- ecdf[q_low_index]
+        q_low       <- s[q_low_index]
+      
       }
-      tmp <- which((ecdf >= up) == TRUE)
-      qup.idx <- tmp[1]
-      qup.p <- posterior[qup.idx]
-      qup.cum <- ecdf[qup.idx]
-      qup <- s[qup.idx]
+      
+      # compute upper bound of credible interval
+      upper_index <- which((ecdf >= up) == TRUE)
+      q_up_index  <- upper_index[1]
+      q_up_p      <- posterior[q_up_index]
+      q_up_cum    <- ecdf[q_up_index]
+      q_up        <- s[q_up_index]
+      
     }
-    else { # computed with a Gamma
+    
+    # posterior from a gamma-poisson
+    else {
+      
+      # unpack
+      counts    <- object@counts
+      fractions <- object@fractions
+      
+      # compute total counts and sum of sampling fractions
+      total_counts    <- sum(counts)
+      total_fractions <- sum(fractions)
+      
+      # update slot
+      object@gamma <- TRUE
+      
+      # set gamma params
       a <- 1
       b <- 1e-10
-      object@gamma <- TRUE
-      # quantiles
-      qlow <- round(qgamma(low, a + K, b + R))
-      qup <- round(qgamma(up, a + K, b + R))
-      # update n1,n2
-      n1 <- round(0.9 * qlow)
-      n2 <- round(1.1 * qup)
-      map <- round(K / (R + b))
-      map.idx <- ifelse(n1 == 0, map, map - n1 + 1)
-      map.p <- dgamma(map, a + K, b + R)
-      qlow.idx <- as.integer(ifelse(n1 == 0, qlow, qlow - n1 + 1))
-      qlow.p <- dgamma(qlow, a + K, b + R) #
-      qlow.cum <- pgamma(qlow, a + K, b + R)
-      qup.idx <- as.integer(ifelse(n1 == 0, qup, qup - n1 + 1))
-      qup.p <- dgamma(qup, a + K, b + R)
-      qup.cum <- pgamma(qup, a + K, b + R)
+      
+      # compute quantiles
+      q_low <- round(qgamma(low, a + total_counts, b + total_fractions))
+      q_up  <- round(qgamma(up, a + total_counts, b + total_fractions))
+      
+      # update prior support
+      n_start <- round(0.9 * q_low)
+      n_end   <- round(1.1 * q_up)
+      
+      # compute posterior params
+      map         <- round(total_counts / (total_fractions + b))
+      map_index   <- ifelse(n_start == 0, map, map - n_start + 1)
+      map_p       <- dgamma(map, a + total_counts, b + total_fractions)
+      q_low_index <- as.integer(ifelse(n_start == 0, q_low, q_low - n_start + 1))
+      q_low_p     <- dgamma(q_low, a + total_counts, b + total_fractions)
+      q_low_cum   <- pgamma(q_low, a + total_counts, b + total_fractions)
+      q_up_index  <- as.integer(ifelse(n_start == 0, q_up, q_up - n_start + 1))
+      q_up_p      <- dgamma(q_up, a + total_counts, b + total_fractions)
+      q_up_cum    <- pgamma(q_up, a + total_counts, b + total_fractions)
+      
     }
-    object@n1 <- n1
-    object@n2 <- n2
-    object@map.p <- map.p
-    object@map.idx <- map.idx
-    object@map <- map
-    object@qlow.p <- qlow.p
-    object@qlow.idx <- qlow.idx
-    object@qlow.cum <- qlow.cum
-    object@qlow <- qlow
-    object@qup.p <- qup.p
-    object@qup.idx <- qup.idx
-    object@qup.cum <- qup.cum
-    object@qup <- qup
+
+    # update slots
+    object@n_start     <- n_start
+    object@n_end       <- n_end
+    object@map_p       <- map_p
+    object@map_index   <- map_index
+    object@map         <- map
+    object@q_low_p     <- q_low_p
+    object@q_low_index <- q_low_index
+    object@q_low_cum   <- q_low_cum
+    object@q_low       <- q_low
+    object@q_up_p      <- q_up_p
+    object@q_up_index  <- q_up_index
+    object@q_up_cum    <- q_up_cum
+    object@q_up        <- q_up
+    
     return(object)
+    
   }
 )
+
+
+
+
+
+
+
+
+
 
 setGeneric(name = "plotPosterior", def = function(object, low = 0.025, up = 0.975, xlab, step, ...) standardGeneric("plotPosterior"))
 setMethod(
