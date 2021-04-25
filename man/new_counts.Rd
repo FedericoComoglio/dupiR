@@ -2,10 +2,18 @@
 % Please edit documentation in R/class.R
 \name{new_counts}
 \alias{new_counts}
-\title{Constructor for `Counts` class}
+\title{Constructor for \code{Counts} class}
 \usage{
 new_counts(counts, fractions)
 }
+\arguments{
+\item{counts}{integer vector of counts}
+
+\item{fractions}{numeric vector of sampling fractions}
+}
+\value{
+An object of the \code{Counts} class
+}
 \description{
-Constructor for `Counts` class
+Constructor for \code{Counts} class
 }
