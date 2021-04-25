@@ -36,7 +36,7 @@
 #'
 #' @author Federico Comoglio
 #' 
-#' @seealso \link{compute_posterior}
+#' @seealso \link{compute_posterior}, \link{get_posterior_param}
 #'
 #' @examples 
 #' # constructor:

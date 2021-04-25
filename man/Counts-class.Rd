@@ -121,7 +121,7 @@ Bayesian inference from count data using discrete uniform priors.
 \href{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0074388}{PLoS ONE 8(10): e74388}
 }
 \seealso{
-\link{compute_posterior}
+\link{compute_posterior}, \link{get_posterior_param}
 }
 \author{
 Federico Comoglio
