@@ -21,20 +21,22 @@ compute_ecdf <- function(posterior) {
 #' @param n_end end of prior support range
 #' @param f_product product of (1-\code{fractions})
 #' 
-get_normalization_constant <- function(counts, n_start, n_end, f_product) {
+compute_normalization_constant <- function(counts, n_start, n_end, f_product) {
   
-  compute_sum_terms(counts, n_start, f_product) - compute_sum_terms(counts, n_end + 1, f_product)
+  compute_sum(counts, n_start, f_product) - compute_sum(counts, n_end + 1, f_product)
 
 }
 
 
 #' Compute posterior probability with replacement
 #' 
-#' @inheritParams get_normalization_constant
+#' @inheritParams compute_normalization_constant
 #' @param n integer for which to compute the posterior
-#' @param denominator normalization constant returned by \code{get_normalization_constant}
+#' @param denominator normalization constant returned by \code{compute_normalization_constant}
 #' 
-get_posterior_with_replacement <- function(n, counts, f_product, denominator) {
+#' @seealso \link{compute_normalization_constant}
+#' 
+compute_posterior_with_replacement <- function(n, counts, f_product, denominator) {
   
   numerator <- f_product ^ n * prod(choose(n, counts))
   posterior <- numerator / denominator
@@ -108,10 +110,16 @@ gamma_poisson_clough <- function(object, n_start, n_end, a = 1, b = 1e-10) {
 }
 
 
+#' Compute single term (F function)
 #' 
-#' 
-#k=counts, n=total number of objects, x = 1-r, t = an index vector
-get_term <- function(counts, n, x, t) {	
+#' @param counts integer vector of counts 
+#' @param n number of objects
+#' @param x 1 - \code{fraction}
+#' @param t index vector
+#'
+#' @return single term of function F
+#'
+compute_term <- function(counts, n, f_product, t) {	
   
   # number of measurements
   n_measurements <- length(t)
@@ -125,18 +133,23 @@ get_term <- function(counts, n, x, t) {
   # compute term of F
 	term <- prod(choose(n + c(0, t_cumulative)[-(n_measurements + 1)], counts - t)) * 
 	  prod(choose(t_cumulative, t)) * 
-	  x ^ (n + t_sum) / 
-	  (1 - x) ^ (1 + t_sum)
+	  f_product ^ (n + t_sum) / 
+	  (1 - f_product) ^ (1 + t_sum)
 	
 	return(term)
 	
 }
 
 
+#' Compute sum of terms (F function)
 #' 
+#' @inheritParams get_normalization_constant
+#' @param counts integer vector of counts 
+#' @param n number of objects
+#'
+#' @return sum of terms in function F
 #' 
-#k=counts, n=total number of objects, x = 1-r
-compute_sum_terms <- function(counts, n, x) {
+compute_sum <- function(counts, n, f_product) {
   
   # store indices for summation
 	index_list <- list()
@@ -155,7 +168,7 @@ compute_sum_terms <- function(counts, n, x) {
 	sum_indices <- expand.grid(index_list)
 	
 	# compute sum of terms
-	sum_terms <- sum(apply(sum_indices, 1, get_term, counts, n = n, x = x))
+	sum_terms <- sum(apply(sum_indices, 1, compute_term, counts, n, f_product))
 	
 	return(sum_terms)
 
