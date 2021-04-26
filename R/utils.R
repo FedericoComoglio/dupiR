@@ -28,6 +28,72 @@ compute_normalization_constant <- function(counts, n_start, n_end, f_product) {
 }
 
 
+
+#' Compute single term (F function)
+#' 
+#' @inheritParams compute_normalization_constant
+#' @param counts integer vector of counts 
+#' @param n number of objects
+#' @param t index vector
+#'
+#' @return single term of function F
+#'
+compute_term <- function(counts, n, f_product, t) {	
+  
+  # number of measurements
+  n_measurements <- length(t)
+  
+  # cumulative sum of t
+  t_cumulative <- cumsum(t)	
+  
+  # total t
+  t_sum <- sum(t)
+  
+  # compute term of F
+  term <- prod(choose(n + c(0, t_cumulative)[-(n_measurements + 1)], counts - t)) * 
+    prod(choose(t_cumulative, t)) * 
+    f_product ^ (n + t_sum) / 
+    (1 - f_product) ^ (1 + t_sum)
+  
+  return(term)
+  
+}
+
+
+#' Compute sum of terms (F function)
+#' 
+#' @inheritParams compute_normalization_constant
+#' @param counts integer vector of counts 
+#' @param n number of objects
+#'
+#' @return sum of terms in function F
+#' 
+compute_sum <- function(counts, n, f_product) {
+  
+  # store indices for summation
+  index_list <- list()
+  
+  # number of measurements
+  n_measurements <- length(counts)
+  
+  # generate indices for summation
+  for (i in seq_len(n_measurements)) {
+    
+    index_list[[i]] <- 0 : counts[i]
+    
+  }
+  
+  # compute cartesian product
+  sum_indices <- expand.grid(index_list)
+  
+  # compute sum of terms
+  sum_terms <- sum(apply(sum_indices, 1, compute_term, counts, n, f_product))
+  
+  return(sum_terms)
+  
+}
+
+
 #' Compute posterior probability with replacement
 #' 
 #' @inheritParams compute_normalization_constant
@@ -107,69 +173,4 @@ gamma_poisson_clough <- function(object, n_start, n_end, a = 1, b = 1e-10) {
     return(NULL)
     
   }
-}
-
-
-#' Compute single term (F function)
-#' 
-#' @param counts integer vector of counts 
-#' @param n number of objects
-#' @param x 1 - \code{fraction}
-#' @param t index vector
-#'
-#' @return single term of function F
-#'
-compute_term <- function(counts, n, f_product, t) {	
-  
-  # number of measurements
-  n_measurements <- length(t)
-  
-  # cumulative sum of t
-  t_cumulative <- cumsum(t)	
-  
-  # total t
-  t_sum <- sum(t)
-  
-  # compute term of F
-	term <- prod(choose(n + c(0, t_cumulative)[-(n_measurements + 1)], counts - t)) * 
-	  prod(choose(t_cumulative, t)) * 
-	  f_product ^ (n + t_sum) / 
-	  (1 - f_product) ^ (1 + t_sum)
-	
-	return(term)
-	
-}
-
-
-#' Compute sum of terms (F function)
-#' 
-#' @inheritParams get_normalization_constant
-#' @param counts integer vector of counts 
-#' @param n number of objects
-#'
-#' @return sum of terms in function F
-#' 
-compute_sum <- function(counts, n, f_product) {
-  
-  # store indices for summation
-	index_list <- list()
-	
-	# number of measurements
-	n_measurements <- length(counts)
-	
-	# generate indices for summation
-	for (i in seq_len(n_measurements)) {
-	  
-	  index_list[[i]] <- 0 : counts[i]
-
-	}
-	
-	# compute cartesian product
-	sum_indices <- expand.grid(index_list)
-	
-	# compute sum of terms
-	sum_terms <- sum(apply(sum_indices, 1, compute_term, counts, n, f_product))
-	
-	return(sum_terms)
-
 }
