@@ -15,6 +15,9 @@ compute_normalization_constant(counts, n_start, n_end, f_product)
 
 \item{f_product}{product of (1-\code{fractions})}
 }
+\value{
+normalization constant to compute posterior density
+}
 \description{
 Compute normalization constant
 }

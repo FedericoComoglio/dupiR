@@ -21,12 +21,13 @@ compute_ecdf <- function(posterior) {
 #' @param n_end end of prior support range
 #' @param f_product product of (1-\code{fractions})
 #' 
+#' @return normalization constant to compute posterior density
+#' 
 compute_normalization_constant <- function(counts, n_start, n_end, f_product) {
   
   compute_sum(counts, n_start, f_product) - compute_sum(counts, n_end + 1, f_product)
 
 }
-
 
 
 #' Compute single term (F function)
