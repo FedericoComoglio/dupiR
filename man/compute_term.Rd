@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{compute_term}
 \alias{compute_term}
-\title{Compute single term (F function)}
+\title{Compute single term (function F, Comoglio et al.)}
 \usage{
 compute_term(counts, n, f_product, t)
 }
@@ -19,5 +19,5 @@ compute_term(counts, n, f_product, t)
 single term of function F
 }
 \description{
-Compute single term (F function)
+Compute single term (function F, Comoglio et al.)
 }

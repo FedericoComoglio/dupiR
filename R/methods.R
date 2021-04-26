@@ -382,8 +382,8 @@ setMethod(
 #' at the given confidence level (default to 95\%).
 #' 
 #' @inheritParams get_counts
-#' @param up left tail posterior probability
 #' @param low 1 - right tail posterior probability
+#' @param up left tail posterior probability
 #' @param ... additional parameters to be passed to \link{plot_posterior}
 #' 
 #' @return an object of class \code{Counts}
@@ -532,17 +532,48 @@ setMethod(
 )
 
 
+#' Plot posterior probability distribution and display posterior parameters
+#' for an object of class \code{Counts}
+#' 
+#' @inheritParams get_counts
+#' @param low 1 - right tail posterior probability
+#' @param up left tail posterior probability
+#' @param xlab x-axis label. Default to 'n' (no label)
+#' @param step integer defining the increment for x-axis labels (distance between two consecutive tick marks)
+#' @param ... additional parameters to be passed to \link{curve}
+#' 
+#' 
+#' @references Comoglio F, Fracchia L and Rinaldi M (2013) 
+#' Bayesian inference from count data using discrete uniform priors. 
+#' \href{https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0074388}{PLoS ONE 8(10): e74388}
+#' 
+#' 
+#' @author Federico Comoglio
+#'
+#' @examples 
+#' counts <- new_counts(counts = c(20,30), fractions = c(0.075, 0.10))
+#' 
+#' # default parameters ("dup" algorithm, sampling without replacement, default prior support)
+#' posterior <- compute_posterior(counts)
+#' 
+#' # plot posterior
+#' plot_posterior(posterior, type = 'l', lwd = 3, col = 'blue3')
+#' 
+setGeneric(name = "plot_posterior", 
+           def = function(object, low = 0.025, up = 0.975, xlab, step, ...) {
+             
+             standardGeneric("plot_posterior")
+             
+          })
 
 
-
-
-
-
-
-
-setGeneric(name = "plotPosterior", def = function(object, low = 0.025, up = 0.975, xlab, step, ...) standardGeneric("plotPosterior"))
+#' 
+#' @describeIn Counts Plot posterior probability distribution and posterior parameters
+#' 
+#' @export
+#' 
 setMethod(
-  f = "plotPosterior",
+  f = "plot_posterior",
   signature = "Counts",
   definition = function(object, low = 0.025, up = 0.975, xlab, step, ...) {
     stopifnot(is(object, "Counts"))
@@ -550,9 +581,9 @@ setMethod(
     r.vec <- object@fractions
     posterior <- object@posterior
 
-    tmp <- getPosteriorParam(object, low, up) # returns an object (tmp)
-    n1 <- tmp@n1
-    n2 <- tmp@n2
+    tmp <- get_posterior_param(object, low, up) # returns an object (tmp)
+    n1 <- tmp@n_start
+    n2 <- tmp@n_end
     s <- n1:n2
     a <- 1
     b <- 1e-10
@@ -570,10 +601,10 @@ setMethod(
         at <- which(s %% step == 0)
         axis(side = 1, at = at, labels = s[at])
       }
-      abline(v = tmp@map.idx, lwd = 1.5, col = "blue3")
-      lines(c(tmp@qlow.idx, tmp@qlow.idx), c(0, tmp@qlow.p), lwd = 1.5, lty = 2, col = "gray50")
-      lines(c(tmp@qup.idx, tmp@qup.idx), c(0, tmp@qup.p), lwd = 1.5, lty = 2, col = "gray50")
-      rect(tmp@qlow.idx, 0, tmp@qup.idx, 1 / 30 * tmp@map.p, col = "gray70")
+      abline(v = tmp@map_index, lwd = 1.5, col = "blue3")
+      lines(c(tmp@q_low_index, tmp@q_low_index), c(0, tmp@q_low_p), lwd = 1.5, lty = 2, col = "gray50")
+      lines(c(tmp@q_up_index, tmp@q_up_index), c(0, tmp@q_up_p), lwd = 1.5, lty = 2, col = "gray50")
+      rect(tmp@q_low_index, 0, tmp@q_up_index, 1 / 30 * tmp@map_p, col = "gray70")
     }
     else {
       l <- n2 - n1 + 1
@@ -591,16 +622,16 @@ setMethod(
         axis(side = 1, at = at, labels = s[at])
       }
       abline(v = tmp@map, lwd = 1.5, col = "blue3")
-      lines(c(tmp@qlow, tmp@qlow), c(0, tmp@qlow.p), lwd = 1.5, lty = 2, col = "gray50")
-      lines(c(tmp@qup, tmp@qup), c(0, tmp@qup.p), lwd = 1.5, lty = 2, col = "gray50")
-      rect(tmp@qlow, 0, tmp@qup, 1 / 30 * tmp@map.p, col = "gray70")
+      lines(c(tmp@q_low, tmp@q_low), c(0, tmp@q_low_p), lwd = 1.5, lty = 2, col = "gray50")
+      lines(c(tmp@q_up, tmp@q_up), c(0, tmp@q_up_p), lwd = 1.5, lty = 2, col = "gray50")
+      rect(tmp@q_low, 0, tmp@q_up, 1 / 30 * tmp@map_p, col = "gray70")
     }
     leg <- legend("topright",
       legend = c(
-        paste("MAP: ", tmp@map, ", (p=", signif(tmp@map.p, 3), ")", sep = ""),
-        paste("CI: [", s[tmp@qlow.idx], ",", s[tmp@qup.idx], "]", sep = ""),
-        paste("CL: ", signif(1 - (signif(tmp@qup.cum, 3) - signif(tmp@qlow.cum, 3)), 3), sep = ""),
-        paste("Tails: [", signif(tmp@qlow.cum, 3), ",", 1 - signif(tmp@qup.cum, 3), "]", sep = "")
+        paste("MAP: ", tmp@map, ", (p=", signif(tmp@map_p, 3), ")", sep = ""),
+        paste("CI: [", s[tmp@q_low_index], ",", s[tmp@q_up_index], "]", sep = ""),
+        paste("CL: ", signif(1 - (signif(tmp@q_up_cum, 3) - signif(tmp@q_low_cum, 3)), 3), sep = ""),
+        paste("Tails: [", signif(tmp@q_low_cum, 3), ",", 1 - signif(tmp@q_up_cum, 3), "]", sep = "")
       ),
       col = c("blue3", NA, NA, "gray50"), lty = c(1, 0, 0, 2), lwd = c(2, 0, 0, 2),
       fill = c(NA, "gray70", "gray70", NA), bty = "n", border = rep("white", 4), plot = TRUE
@@ -609,7 +640,7 @@ setMethod(
     D <- cbind(k.vec, r.vec)
     colnames(D) <- c("Counts", "Fractions")
     rownames(D) <- 1:nrow(D)
-    addtable2plot(leg$rect$left + leg$rect$w / 3, tmp@map.p * 0.85,
+    addtable2plot(leg$rect$left + leg$rect$w / 3, tmp@map_p * 0.85,
       xjust = 0, yjust = 0, D, bty = "o",
       display.rownames = FALSE, hlines = FALSE
     )

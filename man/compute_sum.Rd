@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{compute_sum}
 \alias{compute_sum}
-\title{Compute sum of terms (F function)}
+\title{Compute sum of terms (function F, Comoglio et al.)}
 \usage{
 compute_sum(counts, n, f_product)
 }
@@ -17,5 +17,5 @@ compute_sum(counts, n, f_product)
 sum of terms in function F
 }
 \description{
-Compute sum of terms (F function)
+Compute sum of terms (function F, Comoglio et al.)
 }

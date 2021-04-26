@@ -17,6 +17,13 @@ gamma_poisson_clough(object, n_start, n_end, a = 1, b = 1e-10)
 
 \item{b}{prior rate parameter of the gamma distribution used to compute the posterior with Clough. Default to 1e-10}
 }
+\value{
+vector of posterior probabilities
+}
 \description{
 Compute posterior probability using a Gamma-Poisson model (Clough et al.)
+}
+\note{
+if support range spans more than 100k values, the posterior is not
+computed
 }

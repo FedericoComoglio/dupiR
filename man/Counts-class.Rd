@@ -9,6 +9,7 @@
 \alias{set_fractions<-,Counts-method}
 \alias{compute_posterior,Counts-method}
 \alias{get_posterior_param,Counts-method}
+\alias{plot_posterior,Counts-method}
 \title{An S4 class to store measurements (count data, sampling fractions),
 prior support and posterior parameters}
 \usage{
@@ -30,6 +31,8 @@ prior support and posterior parameters}
 )
 
 \S4method{get_posterior_param}{Counts}(object, low = 0.025, up = 0.975, ...)
+
+\S4method{plot_posterior}{Counts}(object, low = 0.025, up = 0.975, xlab, step, ...)
 }
 \description{
 An S4 class to store measurements (count data, sampling fractions),
@@ -49,6 +52,8 @@ prior support and posterior parameters
 
 \item \code{get_posterior_param}: Extract statistical parameters (e.g. credible intervals) 
 from a posterior probability distribution
+
+\item \code{plot_posterior}: Plot posterior probability distribution and posterior parameters
 }}
 
 \section{Slots}{

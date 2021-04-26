@@ -15,6 +15,9 @@ compute_posterior_with_replacement(n, counts, f_product, denominator)
 
 \item{denominator}{normalization constant returned by \code{compute_normalization_constant}}
 }
+\value{
+posterior probability of \code{n}
+}
 \description{
 Compute posterior probability with replacement
 }
