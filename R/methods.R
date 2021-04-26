@@ -347,7 +347,7 @@ setMethod(
           
           denominator <- compute_normalization_constant(k_vec, n_start, n_end, X)
           posterior <- sapply(s, compute_posterior_with_replacement, k_vec, X, denominator)
-          object@nconst <- denominator
+          object@norm_constant <- denominator
           object@posterior <- posterior
           
           return(object)
