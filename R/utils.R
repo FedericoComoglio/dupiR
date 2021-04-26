@@ -30,7 +30,7 @@ compute_normalization_constant <- function(counts, n_start, n_end, f_product) {
 }
 
 
-#' Compute single term (F function)
+#' Compute single term (function F, Comoglio et al.)
 #' 
 #' @inheritParams compute_normalization_constant
 #' @param counts integer vector of counts 
@@ -61,11 +61,9 @@ compute_term <- function(counts, n, f_product, t) {
 }
 
 
-#' Compute sum of terms (F function)
+#' Compute sum of terms (function F, Comoglio et al.)
 #' 
-#' @inheritParams compute_normalization_constant
-#' @param counts integer vector of counts 
-#' @param n number of objects
+#' @inheritParams compute_term
 #'
 #' @return sum of terms in function F
 #' 
@@ -102,6 +100,8 @@ compute_sum <- function(counts, n, f_product) {
 #' @param n integer for which to compute the posterior
 #' @param denominator normalization constant returned by \code{compute_normalization_constant}
 #' 
+#' @return posterior probability of \code{n}
+#' 
 #' @seealso \link{compute_normalization_constant}
 #' 
 compute_posterior_with_replacement <- function(n, counts, f_product, denominator) {
@@ -122,11 +122,16 @@ compute_posterior_with_replacement <- function(n, counts, f_product, denominator
 #' @param a prior shape parameter of the gamma distribution used to compute the posterior with Clough. Default to 1
 #' @param b prior rate parameter of the gamma distribution used to compute the posterior with Clough. Default to 1e-10
 #' 
+#' @return vector of posterior probabilities
+#' 
+#' @note if support range spans more than 100k values, the posterior is not
+#' computed
+#' 
 gamma_poisson_clough <- function(object, n_start, n_end, a = 1, b = 1e-10) {
   
   # unpack 
-  k_vec <- object@counts
-  r_vec <- object@fractions
+  counts <- object@counts
+  fractions <- object@fractions
   
   # if range start not provided
   if (missing(n_start)) {
@@ -154,6 +159,9 @@ gamma_poisson_clough <- function(object, n_start, n_end, a = 1, b = 1e-10) {
     
   }
 
+  # set flag
+  object@gamma <- TRUE
+  
   # compute support length
   support_length <- n_end - n_start + 1
   
@@ -161,17 +169,15 @@ gamma_poisson_clough <- function(object, n_start, n_end, a = 1, b = 1e-10) {
   if(support_length <= 1e5) {
     
     s <- n_start : n_end
-    posterior <- dgamma(s, a + sum(k_vec), b + sum(r_vec))
+    posterior <- dgamma(s, a + sum(counts), b + sum(fractions))
     
     return(posterior)
     
   }
   
-  # set flag otherwise
+  # otherwise do not compute
   else {  
-    
-    object@gamma <- TRUE
-    
+
     return(NULL)
     
   }

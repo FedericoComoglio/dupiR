@@ -290,13 +290,13 @@ setMethod(
     }
     
     # unpack
-    k_vec <- object@counts
-    r_vec <- object@fractions
-    X <- object@f_product
+    counts    <- object@counts
+    fractions <- object@fractions
+    f_product <- object@f_product
     
     # compute total counts and sum of sampling fractions
-    K <- sum(k_vec)
-    R <- sum(r_vec)
+    total_counts <- sum(counts)
+    f_sum        <- sum(fractions)
     
     # if range start not provided
     if (missing(n_start)) {
@@ -329,13 +329,12 @@ setMethod(
       "dup" = {
         
         # with replacement, using Clough et al.
-        if (R < 1 / 32) { 
+        if (f_sum < 1 / 32) { 
           
           message("Effect of replacement negligible, used Gamma approximation")
-          posterior <- gamma_poisson_clough(object, n_start, n_end, b = b)
+          posterior        <- gamma_poisson_clough(object, n_start, n_end, b = b)
           object@posterior <- posterior
-          object@gamma <- TRUE
-          
+
           return(object)
           
         }
@@ -345,10 +344,10 @@ setMethod(
         # with replacement
         if (replacement) { 
           
-          denominator <- compute_normalization_constant(k_vec, n_start, n_end, X)
-          posterior <- sapply(s, compute_posterior_with_replacement, k_vec, X, denominator)
+          denominator          <- compute_normalization_constant(counts, n_start, n_end, f_product)
+          posterior            <- sapply(s, compute_posterior_with_replacement, counts, f_product, denominator)
           object@norm_constant <- denominator
-          object@posterior <- posterior
+          object@posterior     <- posterior
           
           return(object)
           
@@ -357,7 +356,7 @@ setMethod(
         # without replacement
         else {
           
-          posterior <- dnbinom(s - K, K + 1, R)
+          posterior        <- dnbinom(s - total_counts, total_counts + 1, f_sum)
           object@posterior <- posterior
           
           return(object)
@@ -366,10 +365,9 @@ setMethod(
       
       # with gamma-poisson, using Clough et al.
       "gamma" = {
-        posterior <- gamma_poisson_clough(object, n_start, n_end, b = b)
+        posterior        <- gamma_poisson_clough(object, n_start, n_end, b = b)
         object@posterior <- posterior
-        object@gamma <- TRUE
-        
+
         return(object)
       }
     )
