@@ -88,7 +88,8 @@ compute_sum <- function(counts, n, f_product) {
   sum_indices <- expand.grid(index_list)
   
   # compute sum of terms
-  sum_terms <- sum(apply(sum_indices, 1, compute_term, counts, n, f_product))
+  sum_terms <- sum(apply(sum_indices, 1, compute_term, 
+                         counts = counts, n = n, f_product = f_product))
   
   return(sum_terms)
   
