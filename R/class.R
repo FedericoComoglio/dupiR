@@ -69,7 +69,7 @@ setClass(
     q_low = "numeric",
     q_low_p = "numeric",
     q_low_index = "integer",
-    q_low_cum_p = "numeric",
+    q_low_cum = "numeric",
     q_up = "numeric",
     q_up_p = "numeric",
     q_up_index = "integer",
