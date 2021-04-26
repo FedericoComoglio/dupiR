@@ -10,3 +10,6 @@ Description: Inference of population sizes using a binomial likelihood and least
 License: GPL-2
 LazyLoad: yes
 RoxygenNote: 7.1.1
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
