@@ -345,8 +345,8 @@ setMethod(
         # with replacement
         if (replacement) { 
           
-          denominator <- get_normalization_constant(X, k_vec, n_start, n_end)
-          posterior <- sapply(s, getPwithR, k_vec, X, denominator)
+          denominator <- get_normalization_constant(k_vec, n_start, n_end, X)
+          posterior <- sapply(s, get_posterior_with_replacement, k_vec, X, denominator)
           object@nconst <- denominator
           object@posterior <- posterior
           
