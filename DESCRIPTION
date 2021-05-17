@@ -1,6 +1,6 @@
 Package: dupiR
 Type: Package
-Title: Bayesian inference from count data using discrete uniform priors
+Title: Bayesian Inference from Count Data using Discrete Uniform Priors
 Version: 1.2.1
 Date: 2021-04-19
 Depends: R (>= 2.15.1), methods, plotrix
