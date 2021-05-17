@@ -19,6 +19,7 @@
 #'
 #' @keywords package
 #' 
+#' @importFrom methods show
 NULL
 
 
