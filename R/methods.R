@@ -111,8 +111,6 @@ setReplaceMethod(
 #' 
 #' @inheritParams get_counts
 #' 
-#' @export
-#' 
 setMethod(
   f = "show",
   signature = "Counts",
@@ -576,11 +574,23 @@ setMethod(
   f = "plot_posterior",
   signature = "Counts",
   definition = function(object, low = 0.025, up = 0.975, xlab, step, ...) {
-    stopifnot(is(object, "Counts"))
-    k.vec <- object@counts
-    r.vec <- object@fractions
+    
+    # validate input type
+    if(!is(object, "Counts")) {
+      
+      stop("Input object not of class `Counts`")
+      
+    }
+    
+    # unpack
+    counts    <- object@counts
+    fractions <- object@fractions
     posterior <- object@posterior
 
+    
+    
+    
+    
     tmp <- get_posterior_param(object, low, up) # returns an object (tmp)
     n1 <- tmp@n_start
     n2 <- tmp@n_end
