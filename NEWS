@@ -1,12 +1,10 @@
-CHANGES IN VERSION 1.2.1
-------------------------
+# v1.2.1
 
-    o Updated maintainer email address
+- Remove dependency on plotrix
+- Update maintainer email address
     
-CHANGES IN VERSION 1.2
-------------------------
+# v1.2
 
-    o Changed dilution factor cutoff determining the prior
-    o Updated citation info
-    o Added this News file   
-    o Compliant with R 3.1.2
+- Change dilution factor cutoff determining the prior
+- Update citation info
+- Add News file
