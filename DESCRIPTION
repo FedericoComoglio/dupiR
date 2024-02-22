@@ -2,7 +2,7 @@ Package: dupiR
 Type: Package
 Title: Bayesian Inference from Count Data using Discrete Uniform Priors
 Version: 1.2.1
-Date: 2021-04-19
+Date: 2024-02-22
 Depends: R (>= 2.15.1), methods
 Author: Federico Comoglio and Maurizio Rinaldi
 Maintainer: Federico Comoglio <federico.comoglio@gmail.com>
