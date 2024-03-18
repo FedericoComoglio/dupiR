@@ -14,6 +14,8 @@ Authors@R:
            role = c("aut"),
            email = "maurizio.rinaldi@uniupo.it")
     )
+Author: Federico Comoglio [aut, cre],
+  Maurizio Rinaldi [aut]
 Maintainer: Federico Comoglio <federico.comoglio@gmail.com>
 Description: Inference of population sizes using a binomial likelihood and least informative discrete uniform priors.
 License: GPL-2
