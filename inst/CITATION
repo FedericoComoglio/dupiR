@@ -1,16 +1,13 @@
-citEntry(entry="article",
-         title = "Bayesian inference from count data using discrete uniform priors",
-         author = personList( as.person("Federico Comoglio"), 
-					as.person("Letizia Fracchia"),
-					as.person("Maurizio Rinaldi")),
-         year = 2013,
-         journal = "PLoS ONE",
-         volume = "8(10)",
-         pages = "e74388",
-         doi = "10.1371/journal.pone.0074388",
-         url = "https://github.com/FedericoComoglio/dupiR",
-         
-         textVersion = 
-         paste("Comoglio, F., Fracchia, L. & Rinaldi, M. (2013)", 
-               "Bayesian inference from count data using discrete uniform priors",
-                "PLoS ONE 8(10): e74388. doi:10.1371/journal.pone.0074388" ) )
+bibentry(
+  bibtype  = "Article",
+  title    = "Bayesian inference from count data using discrete uniform priors",
+  author   = c(person("Federico", "Comoglio"),
+               person("Letizia", "Fracchia"),
+               person("Maurizio", "Rinaldi")),
+  journal  = "PLoS ONE",
+  year     = "2013",
+  volume   = "8",
+  number   = "10",
+  pages    = "e74388",
+  doi      = "10.1371/journal.pone.0074388"
+)

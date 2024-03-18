@@ -4,7 +4,16 @@ Title: Bayesian Inference from Count Data using Discrete Uniform Priors
 Version: 1.2.1
 Date: 2024-03-17
 Depends: R (>= 2.15.1), methods
-Author: Federico Comoglio and Maurizio Rinaldi
+Authors@R: 
+    c(person(given = "Federico",
+           family = "Comoglio",
+           role = c("aut", "cre"),
+           email = "federico.comoglio@gmail.com"),
+    person(given = "Maurizio",
+           family = "Rinaldi",
+           role = c("aut"),
+           email = "maurizio.rinaldi@uniupo.it")
+    )
 Maintainer: Federico Comoglio <federico.comoglio@gmail.com>
 Description: Inference of population sizes using a binomial likelihood and least informative discrete uniform priors.
 License: GPL-2
