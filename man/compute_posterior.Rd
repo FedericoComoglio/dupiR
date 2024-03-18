@@ -25,9 +25,7 @@ compute_posterior(
 
 \item{b}{prior rate parameter of the gamma distribution used to compute the posterior with Clough. Default to 1e-10}
 
-\item{alg}{algorithm to be used to compute posterior. One of ... . Default to "dup" ()}
-
-\item{value}{numeric vector of counts}
+\item{alg}{algorithm to be used to compute posterior. One of ... . Default to "dup"}
 }
 \value{
 an object of class \code{Counts}

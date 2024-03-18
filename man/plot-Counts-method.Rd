@@ -9,7 +9,12 @@
 \arguments{
 \item{x}{object of class \code{Counts}}
 
+\item{y}{none}
+
 \item{...}{additional parameters to be passed to \link{plot_posterior}}
+}
+\value{
+None (plotting function).
 }
 \description{
 Plot method for \code{Counts} class

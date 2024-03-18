@@ -6,6 +6,13 @@
 \usage{
 \S4method{initialize}{Counts}(.Object, counts, fractions)
 }
+\arguments{
+\item{.Object}{an object of class "Counts"}
+
+\item{counts}{integer vector of counts}
+
+\item{fractions}{numeric vector of sampling fractions}
+}
 \description{
 Initialize \code{Counts} class
 }

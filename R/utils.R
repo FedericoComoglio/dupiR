@@ -6,11 +6,9 @@
 #' (cumulative sum of \code{posterior})
 #' 
 compute_ecdf <- function(posterior) {
-  
   ecdf <- cumsum(posterior)
   
   return(ecdf)
-  
 }
 
 
@@ -24,9 +22,7 @@ compute_ecdf <- function(posterior) {
 #' @return normalization constant to compute posterior density
 #' 
 compute_normalization_constant <- function(counts, n_start, n_end, f_product) {
-  
   compute_sum(counts, n_start, f_product) - compute_sum(counts, n_end + 1, f_product)
-
 }
 
 
@@ -57,7 +53,6 @@ compute_term <- function(counts, n, f_product, t) {
     (1 - f_product) ^ (1 + t_sum)
   
   return(term)
-  
 }
 
 
@@ -77,9 +72,7 @@ compute_sum <- function(counts, n, f_product) {
   
   # generate indices for summation
   for (i in seq_len(n_measurements)) {
-    
     index_list[[i]] <- 0 : counts[i]
-    
   }
   
   # compute cartesian product
@@ -90,7 +83,6 @@ compute_sum <- function(counts, n, f_product) {
                          counts = counts, n = n, f_product = f_product))
   
   return(sum_terms)
-  
 }
 
 
@@ -105,12 +97,10 @@ compute_sum <- function(counts, n, f_product) {
 #' @seealso \link{compute_normalization_constant}
 #' 
 compute_posterior_with_replacement <- function(n, counts, f_product, denominator) {
-  
   numerator <- f_product ^ n * prod(choose(n, counts))
   posterior <- numerator / denominator
 
   return(posterior)
-
 }
 
 
@@ -135,28 +125,20 @@ gamma_poisson_clough <- function(object, n_start, n_end, a = 1, b = 1e-10) {
   
   # if range start not provided
   if (missing(n_start)) {
-    
     # get it from object
     n_start <- object@n_start
-    
   } else {
-    
     # set range start
     object@n_start <- n_start
-    
   }
   
   # if range end not provided
   if (missing(n_end)) {
-    
     # get it from object
     n_end <- object@n_end
-    
   } else {
-    
     # set range end
     object@n_end <- n_end
-    
   }
 
   # set flag
@@ -174,11 +156,8 @@ gamma_poisson_clough <- function(object, n_start, n_end, a = 1, b = 1e-10) {
     return(posterior)
     
   }
-  
   # otherwise do not compute
   else {  
-
     return(NULL)
-    
   }
 }

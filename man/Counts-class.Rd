@@ -34,28 +34,53 @@ prior support and posterior parameters}
 
 \S4method{plot_posterior}{Counts}(object, low = 0.025, up = 0.975, xlab, step, ...)
 }
+\arguments{
+\item{object}{object of class \code{Counts}}
+
+\item{value}{numeric vector of sampling fractions}
+
+\item{n_start}{start of prior support range}
+
+\item{n_end}{end of prior support range}
+
+\item{replacement}{was sampling performed with replacement? Default to FALSE}
+
+\item{b}{prior rate parameter of the gamma distribution used to compute the posterior with Clough. Default to 1e-10}
+
+\item{alg}{algorithm to be used to compute posterior. One of ... . Default to "dup"}
+
+\item{low}{1 - right tail posterior probability}
+
+\item{up}{left tail posterior probability}
+
+\item{...}{additional parameters to be passed to \link{curve}}
+
+\item{xlab}{x-axis label. Default to 'n' (no label)}
+
+\item{step}{integer defining the increment for x-axis labels (distance between two consecutive tick marks)}
+}
 \description{
 An S4 class to store measurements (count data, sampling fractions),
 prior support and posterior parameters
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{get_counts}: Returns counts from a \code{Counts} object
+\item \code{get_counts(Counts)}: Returns counts from a \code{Counts} object
 
-\item \code{get_fractions}: Returns fractions from a \code{Counts} object
+\item \code{get_fractions(Counts)}: Returns fractions from a \code{Counts} object
 
-\item \code{set_counts<-}: Replaces counts of a \code{Counts} object with the provided values
+\item \code{set_counts(Counts) <- value}: Replaces counts of a \code{Counts} object with the provided values
 
-\item \code{set_fractions<-}: Replaces fractions of a \code{Counts} object with the provided values
+\item \code{set_fractions(Counts) <- value}: Replaces fractions of a \code{Counts} object with the provided values
 
-\item \code{compute_posterior}: Compute the posterior probability distribution of the population size
+\item \code{compute_posterior(Counts)}: Compute the posterior probability distribution of the population size
 
-\item \code{get_posterior_param}: Extract statistical parameters (e.g. credible intervals) 
+\item \code{get_posterior_param(Counts)}: Extract statistical parameters (e.g. credible intervals) 
 from a posterior probability distribution
 
-\item \code{plot_posterior}: Plot posterior probability distribution and posterior parameters
-}}
+\item \code{plot_posterior(Counts)}: Plot posterior probability distribution and posterior parameters
 
+}}
 \section{Slots}{
 
 \describe{

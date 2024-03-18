@@ -15,16 +15,14 @@ setMethod(
   f = "get_counts",
   signature = "Counts",
   definition = function(object) {
-    
     return(object@counts)
-    
   }
 )
 
 
 #' Get \code{fractions} slot for an object of class \code{Counts}
 #' 
-#' @inheritParams get_counts
+#' @param object object of class \code{Counts}
 #' 
 setGeneric(name = "get_fractions", def = function(object) standardGeneric("get_fractions"))
 
@@ -37,9 +35,7 @@ setMethod(
   f = "get_fractions",
   signature = "Counts",
   definition = function(object) {
-    
     return(object@fractions)
-    
   }
 )
 
@@ -56,6 +52,9 @@ setGeneric(name = "set_counts<-", def = function(object, value) standardGeneric(
 
 #' @describeIn Counts Replaces counts of a \code{Counts} object with the provided values
 #' 
+#' @param object object of class \code{Counts}
+#' @param value numeric vector of counts
+#' 
 #' @export
 #' 
 setReplaceMethod(
@@ -70,7 +69,6 @@ setReplaceMethod(
     validObject(object)
     
     return(object)
-    
   }
 )
 
@@ -85,6 +83,9 @@ setGeneric(name = "set_fractions<-", def = function(object, value) standardGener
 
 #' 
 #' @describeIn Counts Replaces fractions of a \code{Counts} object with the provided values
+#'
+#' @param object object of class \code{Counts}
+#' @param value numeric vector of sampling fractions
 #' 
 #' @export
 #' 
@@ -100,7 +101,6 @@ setReplaceMethod(
     validObject(object)
     
     return(object)
-    
   }
 )
 
@@ -109,7 +109,7 @@ setReplaceMethod(
 
 #' Print method for \code{Counts} class
 #' 
-#' @inheritParams get_counts
+#' @param object object of class \code{Counts}
 #' 
 setMethod(
   f = "show",
@@ -123,37 +123,28 @@ setMethod(
     
     # if posterior computed
     if (length(object@posterior) > 0) {
-      
       cat("| posterior:", head(object@posterior, 3), "...", tail(object@posterior, 3), "\n")
-      
     }
     
     if (length(object@map) > 0) {
-      
       cat("| MAP: ", object@map, "\n")
-    
     }
     
     if (length(object@map_p) > 0) {
-      
       cat("| maximum posterior probability: ", object@map_p, "\n")
-    
     }
     
     if (length(object@q_low) > 0 && length(object@q_up) > 0) {
-      
-      cat("| credible interval (", 100 * signif(object@q_up_cum - object@q_low_cum, 3), "% level): ", 
+      cat("| credible interval (", 100 * signif(object@q_up_cum_p - object@q_low_cum_p, 3), "% level): ", 
           paste0("[", object@q_low, ":", object@q_up, "]"), "\n", sep = "")
-    
     }
-    
   }
 )
 
 
 #' Summary method for \code{Counts} class
 #' 
-#' @inheritParams get_counts
+#' @param object object of class \code{Counts}
 #' @param ... additional parameters affecting the summary produced
 #' 
 #' @export
@@ -181,7 +172,10 @@ setMethod(
 #' Plot method for \code{Counts} class
 #' 
 #' @param x object of class \code{Counts}
+#' @param y none
 #' @param ... additional parameters to be passed to \link{plot_posterior}
+#' 
+#' @return None (plotting function).
 #' 
 #' @export
 #' 
@@ -195,14 +189,10 @@ setMethod(
     
       # plot posterior density  
       plot_posterior(x, ...)
-    
     }
     else {
-      
       stop("No posterior available. Please use `compute_posterior` to compute it")
-    
     }
-    
   }
 )
 
@@ -218,13 +208,12 @@ setMethod(
 #' An approximation using a Gamma prior and a Poisson likelihood is used when 
 #' applicable ("gamma" algorithm) method (see Clough et al. for details)
 #' 
-#' @inheritParams get_counts
+#' @param object object of class \code{Counts}
 #' @param n_start start of prior support range
 #' @param n_end end of prior support range
-#' @param value numeric vector of counts
 #' @param replacement was sampling performed with replacement? Default to FALSE
 #' @param b prior rate parameter of the gamma distribution used to compute the posterior with Clough. Default to 1e-10
-#' @param alg algorithm to be used to compute posterior. One of ... . Default to "dup" () 
+#' @param alg algorithm to be used to compute posterior. One of ... . Default to "dup" 
 #' 
 #' @return an object of class \code{Counts}
 #' 
@@ -255,14 +244,19 @@ setMethod(
 #' 
 setGeneric(name = "compute_posterior", 
            def = function(object, n_start, n_end, replacement = FALSE, b = 1e-10, alg = "dup") {
-             
              standardGeneric("compute_posterior")
-             
            })
           
 
 #' 
 #' @describeIn Counts Compute the posterior probability distribution of the population size
+#' 
+#' @param object object of class \code{Counts}
+#' @param n_start start of prior support range
+#' @param n_end end of prior support range
+#' @param replacement was sampling performed with replacement? Default to FALSE
+#' @param b prior rate parameter of the gamma distribution used to compute the posterior with Clough. Default to 1e-10
+#' @param alg algorithm to be used to compute posterior. One of ... . Default to "dup" 
 #' 
 #' @export
 #' 
@@ -273,18 +267,14 @@ setMethod(
     
     # validate input data type
     if(!is(object, "Counts")) {
-      
       stop("Input object not of class `Counts`")
-      
     }
     
     # validate algorithm key
     valid_alg <- c("dup", "gamma")
     
     if(!alg %in% valid_alg) {
-      
       stop("Invalid algorithm name. Please provide one of `dup` or `gamma` to argument `alg`")
-      
     }
     
     # unpack
@@ -298,62 +288,47 @@ setMethod(
     
     # if range start not provided
     if (missing(n_start)) {
-      
       # get it from object
       n_start <- object@n_start
-      
     } else {
-      
       # set range start
       object@n_start <- n_start
-      
     }
     
     # if range end not provided
     if (missing(n_end)) {
-      
       # get it from object
       n_end <- object@n_end
-      
     } else {
-      
       # set range end
       object@n_end <- n_end
-      
     }
     
     # compute posterior
     switch(alg,
       "dup" = {
-        
         # with replacement, using Clough et al.
         if (f_sum < 1 / 32) { 
-          
           message("Effect of replacement negligible, used Gamma approximation")
           posterior        <- gamma_poisson_clough(object, n_start, n_end, b = b)
           object@posterior <- posterior
 
           return(object)
-          
         }
         
         s <- n_start : n_end
         
         # with replacement
         if (replacement) { 
-          
           denominator          <- compute_normalization_constant(counts, n_start, n_end, f_product)
           posterior            <- sapply(s, compute_posterior_with_replacement, counts, f_product, denominator)
           object@norm_constant <- denominator
           object@posterior     <- posterior
           
           return(object)
-          
         }
-        
         # without replacement
         else {
-          
           posterior        <- dnbinom(s - total_counts, total_counts + 1, f_sum)
           object@posterior <- posterior
           
@@ -379,7 +354,7 @@ setMethod(
 #' @description This function computes posterior parameters and credible intervals 
 #' at the given confidence level (default to 95\%).
 #' 
-#' @inheritParams get_counts
+#' @param object object of class \code{Counts}
 #' @param low 1 - right tail posterior probability
 #' @param up left tail posterior probability
 #' @param ... additional parameters to be passed to \link{plot_posterior}
@@ -406,15 +381,18 @@ setMethod(
 #' 
 setGeneric(name = "get_posterior_param", 
            def = function(object, low = 0.025, up = 0.975, ...) {
-             
              standardGeneric("get_posterior_param")
-          
            })
 
 
 #' 
 #' @describeIn Counts Extract statistical parameters (e.g. credible intervals) 
 #' from a posterior probability distribution
+#'
+#' @param object object of class \code{Counts}
+#' @param low 1 - right tail posterior probability
+#' @param up left tail posterior probability
+#' @param ... additional parameters to be passed to \link{plot_posterior}
 #' 
 #' @export
 #' 
@@ -447,7 +425,7 @@ setMethod(
         
         q_low_index <- 1L
         q_low_p     <- posterior[q_low_index]
-        q_low_cum   <- 0
+        q_low_cum_p <- 0
         q_low       <- 0
 
       }
@@ -456,7 +434,7 @@ setMethod(
         lower_index <- which((ecdf <= low) == TRUE)
         q_low_index <- lower_index[length(lower_index)]
         q_low_p     <- posterior[q_low_index]
-        q_low_cum   <- ecdf[q_low_index]
+        q_low_cum_p <- ecdf[q_low_index]
         q_low       <- s[q_low_index]
       
       }
@@ -465,7 +443,7 @@ setMethod(
       upper_index <- which((ecdf >= up) == TRUE)
       q_up_index  <- upper_index[1]
       q_up_p      <- posterior[q_up_index]
-      q_up_cum    <- ecdf[q_up_index]
+      q_up_cum_p  <- ecdf[q_up_index]
       q_up        <- s[q_up_index]
       
     }
@@ -502,10 +480,10 @@ setMethod(
       map_p       <- dgamma(map, a + total_counts, b + total_fractions)
       q_low_index <- as.integer(ifelse(n_start == 0, q_low, q_low - n_start + 1))
       q_low_p     <- dgamma(q_low, a + total_counts, b + total_fractions)
-      q_low_cum   <- pgamma(q_low, a + total_counts, b + total_fractions)
+      q_low_cum_p <- pgamma(q_low, a + total_counts, b + total_fractions)
       q_up_index  <- as.integer(ifelse(n_start == 0, q_up, q_up - n_start + 1))
       q_up_p      <- dgamma(q_up, a + total_counts, b + total_fractions)
-      q_up_cum    <- pgamma(q_up, a + total_counts, b + total_fractions)
+      q_up_cum_p  <- pgamma(q_up, a + total_counts, b + total_fractions)
       
     }
 
@@ -517,11 +495,11 @@ setMethod(
     object@map         <- map
     object@q_low_p     <- q_low_p
     object@q_low_index <- q_low_index
-    object@q_low_cum   <- q_low_cum
+    object@q_low_cum_p <- q_low_cum_p
     object@q_low       <- q_low
     object@q_up_p      <- q_up_p
     object@q_up_index  <- q_up_index
-    object@q_up_cum    <- q_up_cum
+    object@q_up_cum_p  <- q_up_cum_p
     object@q_up        <- q_up
     
     return(object)
@@ -533,7 +511,7 @@ setMethod(
 #' Plot posterior probability distribution and display posterior parameters
 #' for an object of class \code{Counts}
 #' 
-#' @inheritParams get_counts
+#' @param object object of class \code{Counts}
 #' @param low 1 - right tail posterior probability
 #' @param up left tail posterior probability
 #' @param xlab x-axis label. Default to 'n' (no label)
@@ -568,6 +546,13 @@ setGeneric(name = "plot_posterior",
 #' 
 #' @describeIn Counts Plot posterior probability distribution and posterior parameters
 #' 
+#' @param object object of class \code{Counts}
+#' @param low 1 - right tail posterior probability
+#' @param up left tail posterior probability
+#' @param xlab x-axis label. Default to 'n' (no label)
+#' @param step integer defining the increment for x-axis labels (distance between two consecutive tick marks)
+#' @param ... additional parameters to be passed to \link{curve}
+#' 
 #' @export
 #' 
 setMethod(
@@ -577,27 +562,21 @@ setMethod(
     
     # validate input type
     if(!is(object, "Counts")) {
-      
       stop("Input object not of class `Counts`")
-      
     }
     
     # unpack
     counts    <- object@counts
     fractions <- object@fractions
     posterior <- object@posterior
-
     
-    
-    
-    
-    tmp <- get_posterior_param(object, low, up) # returns an object (tmp)
-    n1 <- tmp@n_start
-    n2 <- tmp@n_end
+    post_params <- get_posterior_param(object, low, up)
+    n1 <- post_params@n_start
+    n2 <- post_params@n_end
     s <- n1:n2
     a <- 1
     b <- 1e-10
-    main.text <- paste("Posterior probability distribution \n ", "K=", sum(k.vec), "; ", "R=", sum(r.vec), sep = "")
+    main.text <- paste("Posterior probability distribution \n ", "K=", sum(counts), "; ", "R=", sum(fractions), sep = "")
     if (!is.null(posterior)) {
       l <- length(s)
       plot(posterior,
@@ -611,15 +590,15 @@ setMethod(
         at <- which(s %% step == 0)
         axis(side = 1, at = at, labels = s[at])
       }
-      abline(v = tmp@map_index, lwd = 1.5, col = "blue3")
-      lines(c(tmp@q_low_index, tmp@q_low_index), c(0, tmp@q_low_p), lwd = 1.5, lty = 2, col = "gray50")
-      lines(c(tmp@q_up_index, tmp@q_up_index), c(0, tmp@q_up_p), lwd = 1.5, lty = 2, col = "gray50")
-      rect(tmp@q_low_index, 0, tmp@q_up_index, 1 / 30 * tmp@map_p, col = "gray70")
+      abline(v = post_params@map_index, lwd = 1.5, col = "blue3")
+      lines(c(post_params@q_low_index, post_params@q_low_index), c(0, post_params@q_low_p), lwd = 1.5, lty = 2, col = "gray50")
+      lines(c(post_params@q_up_index, post_params@q_up_index), c(0, post_params@q_up_p), lwd = 1.5, lty = 2, col = "gray50")
+      rect(post_params@q_low_index, 0, post_params@q_up_index, 1 / 30 * post_params@map_p, col = "gray70")
     }
     else {
       l <- n2 - n1 + 1
       x <- NULL
-      curve(dgamma(x, a + sum(k.vec), b + sum(r.vec)),
+      curve(dgamma(x, a + sum(counts), b + sum(fractions)),
         from = n1, to = n2,
         xaxt = "n", pch = 19, cex = 0.5,
         main = main.text, xlab = ifelse(missing(xlab), "n", xlab), ylab = "density", ...
@@ -631,26 +610,26 @@ setMethod(
         at <- which(s %% step == 0)
         axis(side = 1, at = at, labels = s[at])
       }
-      abline(v = tmp@map, lwd = 1.5, col = "blue3")
-      lines(c(tmp@q_low, tmp@q_low), c(0, tmp@q_low_p), lwd = 1.5, lty = 2, col = "gray50")
-      lines(c(tmp@q_up, tmp@q_up), c(0, tmp@q_up_p), lwd = 1.5, lty = 2, col = "gray50")
-      rect(tmp@q_low, 0, tmp@q_up, 1 / 30 * tmp@map_p, col = "gray70")
+      abline(v = post_params@map, lwd = 1.5, col = "blue3")
+      lines(c(post_params@q_low, post_params@q_low), c(0, post_params@q_low_p), lwd = 1.5, lty = 2, col = "gray50")
+      lines(c(post_params@q_up, post_params@q_up), c(0, post_params@q_up_p), lwd = 1.5, lty = 2, col = "gray50")
+      rect(post_params@q_low, 0, post_params@q_up, 1 / 30 * post_params@map_p, col = "gray70")
     }
     leg <- legend("topright",
       legend = c(
-        paste("MAP: ", tmp@map, ", (p=", signif(tmp@map_p, 3), ")", sep = ""),
-        paste("CI: [", s[tmp@q_low_index], ",", s[tmp@q_up_index], "]", sep = ""),
-        paste("CL: ", signif(1 - (signif(tmp@q_up_cum, 3) - signif(tmp@q_low_cum, 3)), 3), sep = ""),
-        paste("Tails: [", signif(tmp@q_low_cum, 3), ",", 1 - signif(tmp@q_up_cum, 3), "]", sep = "")
+        paste("MAP: ", post_params@map, ", (p=", signif(post_params@map_p, 3), ")", sep = ""),
+        paste("CI: [", s[post_params@q_low_index], ",", s[post_params@q_up_index], "]", sep = ""),
+        paste("CL: ", signif(1 - (signif(post_params@q_up_cum_p, 3) - signif(post_params@q_low_cum_p, 3)), 3), sep = ""),
+        paste("Tails: [", signif(post_params@q_low_cum_p, 3), ",", 1 - signif(post_params@q_up_cum_p, 3), "]", sep = "")
       ),
       col = c("blue3", NA, NA, "gray50"), lty = c(1, 0, 0, 2), lwd = c(2, 0, 0, 2),
       fill = c(NA, "gray70", "gray70", NA), bty = "n", border = rep("white", 4), plot = TRUE
     )
     # add counts table
-    D <- cbind(k.vec, r.vec)
+    D <- cbind(counts, fractions)
     colnames(D) <- c("Counts", "Fractions")
     rownames(D) <- 1:nrow(D)
-    addtable2plot(leg$rect$left + leg$rect$w / 3, tmp@map_p * 0.85,
+    addtable2plot(leg$rect$left + leg$rect$w / 3, post_params@map_p * 0.85,
       xjust = 0, yjust = 0, D, bty = "o",
       display.rownames = FALSE, hlines = FALSE
     )

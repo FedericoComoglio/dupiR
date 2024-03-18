@@ -69,11 +69,11 @@ setClass(
     q_low = "numeric",
     q_low_p = "numeric",
     q_low_index = "integer",
-    q_low_cum = "numeric",
+    q_low_cum_p = "numeric",
     q_up = "numeric",
     q_up_p = "numeric",
     q_up_index = "integer",
-    q_up_cum = "numeric",
+    q_up_cum_p = "numeric",
     gamma = "logical"
   ),
 
@@ -81,34 +81,31 @@ setClass(
 
     # number of counts must be same as number of fractions
     if (!(length(object@counts) == length(object@fractions))) {
-
       stop("The number of measurements does not match the number of fractions")
-
     }
 
     # fractions must be strictly positive and <= 1
     if (!(all(object@fractions <= 1 & object@fractions > 0))) {
-
       stop("At least one fraction not in (0,1]")
-
     }
     
     # counts must be positive
     if (any(object@counts < 0)) {
-
       stop("At least one count is negative")
-
     }
 
     # pass
     return(TRUE)
-
   }
 )
 
 
 #' Initialize \code{Counts} class
 #'
+#' @param .Object an object of class "Counts"
+#' @param counts integer vector of counts
+#' @param fractions numeric vector of sampling fractions
+#' 
 setMethod(
   f = "initialize",
   signature = "Counts",
@@ -116,14 +113,11 @@ setMethod(
     
     # if counts not provided, create dummy
     if(missing(counts)) {
-      
       counts <- integer()
-      
     }
     
     # if counts are numeric but not integer, cast to integer
     if(!is.integer(counts) && is.numeric(counts)) {
-      
       counts <- as.integer(counts)
       message("Counts converted to integer")
       
@@ -134,9 +128,7 @@ setMethod(
     
     # if fractions not provided, create dummy
     if(missing(fractions)) {
-      
       fractions <- numeric()
-      
     }
     
     # set fractions
@@ -174,7 +166,5 @@ setMethod(
 #' @export
 #' 
 new_counts <- function(counts, fractions) {
-
     new(Class = "Counts", counts = counts, fractions = fractions)
-
 }
