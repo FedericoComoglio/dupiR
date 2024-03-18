@@ -15,7 +15,7 @@
 #' Comoglio F, Fracchia L, Rinaldi M (2013) Bayesian Inference from Count Data 
 #' Using Discrete Uniform Priors. PLoS ONE 8(10): e74388
 #'
-#' @docType package
+#' @docType _PACKAGE
 #'
 #' @keywords package
 #' 
