@@ -11,6 +11,9 @@ set_fractions(object) <- value
 
 \item{value}{numeric vector of sampling fractions}
 }
+\value{
+an object of class \code{Counts}
+}
 \description{
 Set \code{fractions} slot for an object of class \code{Counts}
 }

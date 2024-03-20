@@ -11,6 +11,9 @@ set_counts(object) <- value
 
 \item{value}{numeric vector of counts}
 }
+\value{
+an object of class \code{Counts}
+}
 \description{
 Set \code{counts} slot for an object of class \code{Counts}
 }

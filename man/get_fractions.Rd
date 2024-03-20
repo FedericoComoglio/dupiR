@@ -9,6 +9,9 @@ get_fractions(object)
 \arguments{
 \item{object}{object of class \code{Counts}}
 }
+\value{
+fractions vector from a \code{Counts} object
+}
 \description{
 Get \code{fractions} slot for an object of class \code{Counts}
 }

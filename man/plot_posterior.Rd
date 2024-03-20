@@ -20,6 +20,9 @@ plot_posterior(object, low = 0.025, up = 0.975, xlab, step, ...)
 
 \item{...}{additional parameters to be passed to \link{curve}}
 }
+\value{
+no return value, called for side effects
+}
 \description{
 Plot posterior probability distribution and display posterior parameters
 for an object of class \code{Counts}

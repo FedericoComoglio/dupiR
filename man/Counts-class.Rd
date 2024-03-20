@@ -59,6 +59,21 @@ prior support and posterior parameters}
 
 \item{step}{integer defining the increment for x-axis labels (distance between two consecutive tick marks)}
 }
+\value{
+counts vector from a \code{Counts} object
+
+fractions vector from a \code{Counts} object
+
+an object of class \code{Counts}
+
+an object of class \code{Counts}
+
+an object of class \code{Counts}
+
+an object of class \code{Counts}
+
+no return value, called for side effects
+}
 \description{
 An S4 class to store measurements (count data, sampling fractions),
 prior support and posterior parameters

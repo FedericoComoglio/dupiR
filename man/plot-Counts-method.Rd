@@ -14,7 +14,7 @@
 \item{...}{additional parameters to be passed to \link{plot_posterior}}
 }
 \value{
-None (plotting function).
+no return value, called for side effects
 }
 \description{
 Plot method for \code{Counts} class

@@ -11,6 +11,9 @@
 
 \item{...}{additional parameters affecting the summary produced}
 }
+\value{
+no return value, called for side effects
+}
 \description{
 Summary method for \code{Counts} class
 }

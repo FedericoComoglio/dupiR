@@ -9,6 +9,9 @@
 \arguments{
 \item{object}{object of class \code{Counts}}
 }
+\value{
+no return value, called for side effects
+}
 \description{
 Print method for \code{Counts} class
 }

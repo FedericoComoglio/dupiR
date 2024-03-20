@@ -9,6 +9,9 @@ get_counts(object)
 \arguments{
 \item{object}{object of class \code{Counts}}
 }
+\value{
+counts vector from a \code{Counts} object
+}
 \description{
 Get \code{counts} slot for an object of class \code{Counts}
 }
